@@ -3,44 +3,58 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
 
-const numbers = [1, 2, 3, 4, 5];
+function BoilingVerdict(props) {
+    if (props.celsius >= 100) {
+        return <p>The water would boil.</p>;
+    }
+    return <p>The water would not boil.</p>;
+}
 
-class NameForm extends React.Component {
+const scaleNames = {
+    c: "Celsius",
+    f: "Fahrenheit"
+};
+
+class TemperatureInput extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            value: ''
-        };
-
+        super(props)
         this.handleChange = this
             .handleChange
             .bind(this);
-        this.handleSubmit = this
-            .handleSubmit
-            .bind(this);
+        this.state = {
+            temperature: ''
+        };
     }
 
-    handleChange(event) {
-        this.setState({value: event.target.value})
-    }
-
-    handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.value);
-        event.preventDefault();
+    handleChange(e) {
+        this.setState({temperature: e.target.value});
     }
 
     render() {
+        const temperature = this.state.temperature;
+        const scale = this.props.scale;
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Name:
-                    <input type="text" value={this.state.value} onChange={this.handleChange}/>
-                </label>
-                <input type="submit" value="Submit" />
-            </form>
-        )
+            <fieldset>
+                <legend>Enter termperature in {scaleNames[scale]}:</legend>
+                <input value={temperature} onChange={this.handleChange}/>
+
+                <BoilingVerdict celsius={parseFloat(temperature)}/>
+            </fieldset>
+
+        );
+    }
+}
+
+class Calculator extends React.Component {
+    render() {
+        return (
+            <div>
+                <TemperatureInput scale="c"/>
+                <TemperatureInput scale="f"/>
+            </div>
+        );
     }
 }
 
 ReactDOM.render(
-    <NameForm />, document.getElementById('root'));
+    <Calculator/>, document.getElementById('root'));
